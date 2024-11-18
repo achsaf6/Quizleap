@@ -3,6 +3,8 @@
 const API_URL = "https://api.openai.com/v1/completions"; // Example for OpenAI API
 const API_KEY = "your-api-key"; // Replace with your actual API key
 
+//use the user number to make that many calls
+
 export const generateQuestions = async (numQuestions) => {
     return "How many fingers am I holding up?\nWhat time is it?\nWould you like fries with that".split("\n");
 };
