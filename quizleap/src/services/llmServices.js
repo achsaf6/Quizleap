@@ -1,36 +1,59 @@
 // import axios from "axios";
 
-const API_URL = "https://api.openai.com/v1/completions"; // Example for OpenAI API
-const API_KEY = "your-api-key"; // Replace with your actual API key
+import OpenAI from "openai"; 
 
-//use the user number to make that many calls
+const API_KEY = "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"; 
 
-export const generateQuestions = async (numQuestions) => {
-    return "How many fingers am I holding up?\nWhat time is it?\nWould you like fries with that".split("\n");
-};
-// export const generateQuestions = async (numQuestions) => {
-//   try {
-//     const response = await axios.post(
-//       API_URL,
-//       {
-//         model: "text-davinci-003", // Adjust according to your model
-//         prompt: `Generate ${numQuestions} multiple-choice questions on general knowledge.`,
-//         max_tokens: 1000,
-//         n: 1,
-//         stop: null,
-//       },
-//       {
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${API_KEY}`,
-//         },
-//       }
-//     );
-//     // Parse and return the questions
-//     const questions = response.data.choices[0].text.split("\n").filter(Boolean);
-//     return questions;
-//   } catch (error) {
-//     console.error("Error generating questions:", error);
-//     return ["Error generating questions, please try again."];
-//   }
-// };
+const client = new OpenAI({
+    apiKey: API_KEY, 
+    dangerouslyAllowBrowser: true //TODO change this 
+  });
+
+
+  
+  export const generateQuestions = async (numQuestions, difficulty) => {
+  const message = `Give me ${difficulty} multiple choice question about the Harry Potter series in the following format:#question goes here#option 1#option 2#option 3#option 4#answer index\n\n
+  Here is an example of the desired format:\n
+  What shape is the scar on Harry's forehead?#Cloud#Feather#Skull#Lightning Bolt#4`
+    const response = await client.chat.completions.create({
+        messages: [{ role: 'user', content: message }],
+        model: 'gpt-3.5-turbo',
+        n: numQuestions,
+        temperature: 1.1
+      });
+      // console.log(response);
+      return response.choices;
+}
+
+/*
+export const generateQuestions = async (num) => {
+    try {
+      const response = await axios.post(
+        API_URL,
+        {
+          model: "gpt-3.5-turbo", 
+          messages: [
+            { 
+              role: "system", 
+              content: "You are a helpful assistant." 
+            },
+            { 
+              role: "user", 
+              content: message 
+            }
+          ],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${API_KEY}`,
+          },
+        }
+      );
+  
+      return response.data.choices[0].message.content;
+    } catch (error) {
+      console.error("Error fetching ChatGPT response:", error);
+      return null;
+    }
+  }; */

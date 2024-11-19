@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "./InputForm.css"
 import { generateQuestions } from "../services/llmServices.js";
-
+import MultipleChoiceQuestion from "./MultipleChoiceQuestion.js";
 // multiple choice questions
 // free form questions
 
-function InputForm({ setNumQuestions, setQuestions }) {
+function InputForm({ setNumQuestions, questions, setQuestions }) {
   const [inputValue, setInputValue] = useState("");
 
   const handleSubmit = async (e) => {
@@ -16,8 +16,19 @@ function InputForm({ setNumQuestions, setQuestions }) {
       return;
     }
     setNumQuestions(num);
-    const generatedQuestions = await generateQuestions(num);
-    setQuestions(generatedQuestions);
+    const responses = await generateQuestions(num, "a very hard");
+    responses.forEach( (response, index) => {
+      const data = response.message.content.split(`#`);
+      const question = data[0];
+      const answers = [
+        {text: data[1], isCorrect: 1 == data[5]},
+        {text: data[2], isCorrect: 2 == data[5]},
+        {text: data[3], isCorrect: 3 == data[5]},
+        {text: data[4], isCorrect: 4 == data[5]},
+      ]
+      const questionComponent = <MultipleChoiceQuestion question={question} answers={answers} index={index+1}/>;
+      setQuestions((prevQuestions) => [...prevQuestions,questionComponent]);
+    } )
   };
 
   return (

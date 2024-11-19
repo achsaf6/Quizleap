@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, {useState} from 'react';
 import InputForm from "./components/InputForm";
-import QuizDisplay from "./components/QuizDisplay";
+import Carousel from './components/Carousel';
 
 function App() {
   const [numQuestions, setNumQuestions] = useState(0);
@@ -11,12 +11,14 @@ function App() {
   return (
     
     <body className="App">
+      {console.log("outside:\n", questions)}
       {!questions.length ? (
         <InputForm setNumQuestions={setNumQuestions} setQuestions={setQuestions} />
       ) : (
-        <QuizDisplay questions={questions} />
+        <Carousel questions={questions}/>
       )}
     </body>
+    
   );
 }
 
