@@ -8,7 +8,7 @@ function InputForm({ setNumQuestions, setQuestionDatas }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const num = parseInt(inputValue, 10);
-    if (isNaN(num) || num <= 0) {
+    if (isNaN(num) || num <= 0 || num > 50) {
       alert("Please enter a valid number!");
       return;
     }
