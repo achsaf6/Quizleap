@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { generateQuestions } from "../services/llmServices.js";
+import { generateQuestions } from "../services/llmServices.ts";
 
 function InputForm({ setNumQuestions, setQuestionDatas }) {
   const [inputValue, setInputValue] = useState("");
@@ -9,31 +9,15 @@ function InputForm({ setNumQuestions, setQuestionDatas }) {
     e.preventDefault();
     const num = parseInt(inputValue, 10);
     if (isNaN(num) || num <= 0 || num > 50) {
-      alert("Please enter a valid number!");
+      const cry = String.fromCodePoint(128557);
+      alert(`I can only generate 1-50 questions at a time ${cry}`);
       return;
     }
     setLoading(true); // Start loading
     setNumQuestions(num);
-    try {
-      const responses = await generateQuestions(num, "a very hard");
-      responses.forEach((response, index) => {
-        const data = response.message.content.split(`#`);
-        const question = data[0];
-        const answers = [
-          { text: data[1], isCorrect: 1 == data[5] },
-          { text: data[2], isCorrect: 2 == data[5] },
-          { text: data[3], isCorrect: 3 == data[5] },
-          { text: data[4], isCorrect: 4 == data[5] },
-        ];
-        const questionData = { question, answers, index: index + 1 };
-        setQuestionDatas((prevData) => [...prevData, questionData]);
-      });
-    } catch (error) {
-      console.error("Error generating questions:", error);
-      alert("There was an error generating the quiz. Please try again.");
-    } finally {
+      const response = await generateQuestions(num, "a very hard");
+      setQuestionDatas(response.quiz)   
       setLoading(false); // Stop loading
-    }
   };
 
   return (

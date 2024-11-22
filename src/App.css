@@ -20,5 +20,6 @@ body {
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
-  background-color: #f5f5f5; /* Optional: Add a background color */
+  /* background: url("/public/HP_wallpaper.jpg"); Optional: Add a background color */
+  background-size: cover;
 }

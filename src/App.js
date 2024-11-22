@@ -10,7 +10,7 @@ function App() {
 
   return (
     
-    <body className="App">
+    <body className="App" >
       {!questionDatas.length ? (
         <InputForm setNumQuestions={setNumQuestions} setQuestionDatas={setQuestionDatas} />
       ) : (

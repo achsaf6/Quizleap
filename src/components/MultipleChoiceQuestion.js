@@ -35,7 +35,7 @@ function MultipleChoiceQuestion({ question, answers, index, answerState, onAnswe
               transition: "background-color 0.3s",
             }}
           >
-            {answer.text}
+            {answer.option}
           </li>
         ))}
       </ul>

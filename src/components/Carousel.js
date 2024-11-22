@@ -30,34 +30,59 @@ function Carousel({ questions }) {
     });
   };
 
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   return (
-    <div style={styles.carouselContainer}>
-      <button onClick={goToPrevious} style={styles.arrowButton}>
-        &lt;
-      </button>
-      <div style={styles.content}>
-        <MultipleChoiceQuestion
-          question={questions[currentIndex].question}
-          answers={questions[currentIndex].answers}
-          index={currentIndex + 1}
-          answerState={answersState[currentIndex]}
-          onAnswer={(answerIndex) => handleAnswer(currentIndex, answerIndex)}
-        />
+    <div style={styles.container}>
+      <div>
+        <img style={styles.refresh} src="/refresh.png" alt="Refresh"  onClick={refreshPage} />
       </div>
-      <button onClick={goToNext} style={styles.arrowButton}>
-        &gt;
-      </button>
+      <div style={styles.carouselContainer}>
+        <button onClick={goToPrevious} style={styles.arrowButton}>
+          &lt;
+        </button>
+        <div style={styles.content}>
+          <MultipleChoiceQuestion
+            question={questions[currentIndex].question}
+            answers={questions[currentIndex].answers}
+            index={currentIndex + 1}
+            answerState={answersState[currentIndex]}
+            onAnswer={(answerIndex) => handleAnswer(currentIndex, answerIndex)}
+          />
+        </div>
+        <button onClick={goToNext} style={styles.arrowButton}>
+          &gt;
+        </button>
+      </div>
     </div>
   );
 }
 
 const styles = {
+  refresh: {
+    margin: "1em auto", 
+    display: "block", 
+    boxSizing: "border-box",
+    width: "100%",
+    maxWidth: "2em",
+    height: "auto",
+    objectFit: "contain", 
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "center",
+    alignItems: "center",
+    overflow: "hidden"
+  },
   carouselContainer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     gap: "10px",
-    maxWidth: "400px",
+    maxWidth: "40em",
     margin: "0 auto",
     border: "1px solid #ddd",
     borderRadius: "8px",
@@ -65,12 +90,11 @@ const styles = {
     boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
   },
   arrowButton: {
-    backgroundColor: "#f0f0f0",
     border: "none",
-    borderRadius: "50%",
-    width: "40px",
-    height: "40px",
-    fontSize: "20px",
+    borderRadius: "100%",
+    width: "4em",
+    height: "4em",
+    fontSize: "1em",
     cursor: "pointer",
   },
   content: {
