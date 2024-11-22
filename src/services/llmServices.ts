@@ -15,46 +15,50 @@ const quizSchema = (numQuestions) => z.object({
       )
     })
   ),
-  numQuestions : numQuestions
+  numQuestions: z.number().refine((val) => val === numQuestions, {
+    message: `numQuestions must be ${numQuestions}`,
+  }),
 })
+
+type QuizResponse = z.infer<ReturnType<typeof quizSchema>>;
 
 const client = new OpenAI({
   apiKey: API_KEY,
   dangerouslyAllowBrowser: true, 
 });
 
-export const generateQuestions = async (numQuestions = 5, difficulty = "medium") => {
-  const prompt = `Generate a multiple choice quiz that has ${numQuestions} questions of ${difficulty}.
+export const generateQuestions = async (numQuestions = 5, difficulty = `medium`) => {
+    if (numQuestions < 1) return {quiz:[]};
+    const prompt = `Generate a multiple choice quiz that has ${numQuestions} questions of ${difficulty}.
                   Ensure that each question is semantically unique.`;
-
-  let attempt = 0;
-
-
-  // while (true) {
-    try {
-      const response = await client.chat.completions.create({
-        messages: [
-          {
-            role: "system",
-            content: "You are a Harry Potter expert writing trivia questions based on the Harry Potter Wiki.",
-          },
-          { role: "user", content: prompt },
-        ],
-        model: "gpt-4o-mini",
-        temperature: 1.0,
-        response_format: zodResponseFormat(quizSchema(numQuestions), "quiz_response")
-      });
-      
-      const raw = response.choices[0].message.content;
-      if (raw == null){
-        throw new Error("Response returned null");
+    // while (true) {
+      try {
+        const response = await client.chat.completions.create({
+          messages: [
+            {
+              role: `system`,
+              content: `You are a Harry Potter expert writing trivia questions based on the Harry Potter Wiki.`,
+            },
+            { role: `user`, content: prompt },
+          ],
+          model: `gpt-4o-mini`,
+          temperature: 1.0,
+          response_format: zodResponseFormat(quizSchema(numQuestions), `quiz_response`)
+        });
+        
+        const raw = response.choices[0].message.content;
+        if (raw == null){
+          throw new Error(`Response returned null`);
+        }
+        const quizJSON = JSON.parse(raw); 
+        if (quizJSON.quiz.length < numQuestions) {
+          console.log(`Second Call was made with ${numQuestions - quizJSON.quiz.length} `);
+          const secondCall = await  generateQuestions(numQuestions - quizJSON.quiz.length, difficulty);
+          quizJSON.quiz.push(...secondCall.quiz)
+        }
+        return quizJSON;
+      } catch (error) {
+        console.error(`Quiz generation failed:`, error);
       }
-      const quiz = JSON.parse(raw); 
-      console.log("Quiz generated successfully:", quiz);
-      return quiz;
-    } catch (error) {
-      attempt++;
-      console.error(`Attempt ${attempt} failed:`, error);
-    }
-  // }
+    // }
 };

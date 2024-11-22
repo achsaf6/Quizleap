@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 
-function Carousel({ questions }) {
+function Carousel({ quizData }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answersState, setAnswersState] = useState(
-    questions.map(() => ({ answerIndex: null, isAnswered: false }))
+    quizData.quiz.map(() => ({ answerIndex: null, isAnswered: false }))
   );
 
   const goToPrevious = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? questions.length - 1 : prevIndex - 1
+    setCurrentIndex((prevIndex) =>{
+      return prevIndex === 0 ? quizData.numQuestions - 1 : prevIndex - 1}
     );
   };
 
   const goToNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === questions.length - 1 ? 0 : prevIndex + 1
+    setCurrentIndex((prevIndex) =>{
+      return prevIndex === quizData.numQuestions - 1 ? 0 : prevIndex + 1}
     );
   };
+
+
 
   const handleAnswer = (questionIndex, answerIndex) => {
     setAnswersState((prevState) => {
@@ -45,8 +47,8 @@ function Carousel({ questions }) {
         </button>
         <div style={styles.content}>
           <MultipleChoiceQuestion
-            question={questions[currentIndex].question}
-            answers={questions[currentIndex].answers}
+            question={quizData.quiz[currentIndex].question}
+            answers={quizData.quiz[currentIndex].answers}
             index={currentIndex + 1}
             answerState={answersState[currentIndex]}
             onAnswer={(answerIndex) => handleAnswer(currentIndex, answerIndex)}

@@ -1,24 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { generateQuestions } from "../services/llmServices.ts";
 
-function InputForm({ setNumQuestions, setQuestionDatas }) {
+function InputForm({ setNumQuestions, setQuizData }) {
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [firstKeyPressed, setFirstKeyPressed] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const num = parseInt(inputValue, 10);
+  const handleSubmit = async (num) => {
     if (isNaN(num) || num <= 0 || num > 50) {
       const cry = String.fromCodePoint(128557);
       alert(`I can only generate 1-50 questions at a time ${cry}`);
       return;
     }
+    console.log(`Generating ${num} questions...`);
     setLoading(true); // Start loading
     setNumQuestions(num);
-      const response = await generateQuestions(num, "a very hard");
-      setQuestionDatas(response.quiz)   
-      setLoading(false); // Stop loading
+    const response = await generateQuestions(num, "a very hard");
+    console.log(`Quiz generated successfully:`, response);
+    setQuizData(response);
+    setLoading(false); // Stop loading
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (document.activeElement.tagName !== "INPUT") {
+        const key = event.key;
+  
+        if (!isNaN(key) && key !== " ") {
+          let num = parseInt(key, 10);
+          if (num === 0) num = 50;
+          handleSubmit(num);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [firstKeyPressed]); // Dependency includes `firstKeyPressed`
 
   return (
     <div
@@ -33,7 +55,10 @@ function InputForm({ setNumQuestions, setQuestionDatas }) {
         <div style={{ fontSize: "1.5em", fontWeight: "bold" }}>Loading...</div>
       ) : (
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(parseInt(inputValue, 10));
+          }}
           style={{
             display: "flex",
             flexDirection: "column",

@@ -6,15 +6,15 @@ import Carousel from './components/Carousel';
 
 function App() {
   const [numQuestions, setNumQuestions] = useState(0);
-  const [questionDatas, setQuestionDatas] = useState([]);
+  const [quizData, setQuizData] = useState(null);
 
   return (
     
     <body className="App" >
-      {!questionDatas.length ? (
-        <InputForm setNumQuestions={setNumQuestions} setQuestionDatas={setQuestionDatas} />
+      {!quizData ? (
+        <InputForm setNumQuestions={setNumQuestions} setQuizData={setQuizData} />
       ) : (
-        <Carousel questions={questionDatas}/>
+        <Carousel quizData={quizData}/>
       )}
     </body>
     
