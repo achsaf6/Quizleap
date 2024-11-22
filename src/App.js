@@ -11,11 +11,13 @@ function App() {
   return (
     
     <body className="App" >
-      {!quizData ? (
-        <InputForm setNumQuestions={setNumQuestions} setQuizData={setQuizData} />
-      ) : (
-        <Carousel quizData={quizData}/>
-      )}
+      <div className='content'>
+        {!quizData ? (
+          <InputForm setNumQuestions={setNumQuestions} setQuizData={setQuizData} />
+        ) : (
+          <Carousel quizData={quizData}/>
+        )}
+      </div>
     </body>
     
   );

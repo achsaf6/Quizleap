@@ -8,18 +8,16 @@ function Carousel({ quizData }) {
   );
 
   const goToPrevious = () => {
-    setCurrentIndex((prevIndex) =>{
-      return prevIndex === 0 ? quizData.numQuestions - 1 : prevIndex - 1}
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? quizData.numQuestions - 1 : prevIndex - 1
     );
   };
 
   const goToNext = () => {
-    setCurrentIndex((prevIndex) =>{
-      return prevIndex === quizData.numQuestions - 1 ? 0 : prevIndex + 1}
+    setCurrentIndex((prevIndex) =>
+      prevIndex === quizData.numQuestions - 1 ? 0 : prevIndex + 1
     );
   };
-
-
 
   const handleAnswer = (questionIndex, answerIndex) => {
     setAnswersState((prevState) => {
@@ -38,10 +36,10 @@ function Carousel({ quizData }) {
 
   return (
     <div style={styles.container}>
-      <div>
-        <img style={styles.refresh} src="/refresh.png" alt="Refresh"  onClick={refreshPage} />
+      <div className="refresh">
+        <img style={styles.refresh} src="/refresh.png" alt="Refresh" onClick={refreshPage}/>
       </div>
-      <div style={styles.carouselContainer}>
+      <div className="carouselContainer" style={styles.carouselContainer}>
         <button onClick={goToPrevious} style={styles.arrowButton}>
           &lt;
         </button>
@@ -64,20 +62,20 @@ function Carousel({ quizData }) {
 
 const styles = {
   refresh: {
-    margin: "1em auto", 
-    display: "block", 
+    margin: "1em auto",
+    display: "block",
     boxSizing: "border-box",
     width: "100%",
     maxWidth: "2em",
     height: "auto",
-    objectFit: "contain", 
+    objectFit: "contain",
   },
   container: {
     display: "flex",
     flexDirection: "column",
     textAlign: "center",
     alignItems: "center",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   carouselContainer: {
     display: "flex",
@@ -86,10 +84,11 @@ const styles = {
     gap: "10px",
     maxWidth: "40em",
     margin: "0 auto",
-    border: "1px solid #ddd",
     borderRadius: "8px",
     padding: "20px",
     boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+    backgroundColor: "#f9da71",
+
   },
   arrowButton: {
     border: "none",
