@@ -98,6 +98,7 @@ function InputForm({ setQuizData, metaData }) {
           <input
             type="number"
             value={inputValue}
+            placeholder="Type here..."
             onChange={(e) => setInputValue(e.target.value)}
             style={styles.input}
           />

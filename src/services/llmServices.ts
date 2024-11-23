@@ -52,8 +52,7 @@ const topics = [
 
 // Description of the AI's role in generating quiz questions
 const systemRole = `You are a massive Harry Potter fan who is deeply invested in the wizarding world.
-You are writing a fun multiple-choice trivia quiz that covers events, characters, places, spells, and items
-from the Harry Potter universe.`;
+You are writing a fun multiple-choice quiz for a local trivia night.`;
 
 /**
  * Generates a random prompt for quiz generation.
@@ -65,7 +64,7 @@ from the Harry Potter universe.`;
 const getRandomPrompt = (numQuestions, difficulty) => {
   const topic = [...topics]
     .sort(() => 0.5 - Math.random())
-    .slice(0, Math.floor(topics.length))
+    .slice(0, Math.floor(topics.length/2)-1)
     .join();
 
   const templates = [

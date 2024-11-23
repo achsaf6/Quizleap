@@ -11,7 +11,7 @@ import Sidebar from './components/Sidebar';
  */
 function App() {
 
-  const [difficulty, setDifficulty] = useState(3);
+  const [difficulty, setDifficulty] = useState(4);
 
   // State to store quiz, initially set to null
   const [quizData, setQuizData] = useState(null);
