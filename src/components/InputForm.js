@@ -11,6 +11,14 @@ const difficultyMap = {
   5: "Impossible"
 };
 
+const shuffleAnswers = (response) => {
+  response.quiz.forEach((quizItem) => {
+    quizItem.answers.sort(() => Math.random() - 0.5);
+  });
+  return response; 
+};
+
+
 function InputForm({ setQuizData, metaData }) {
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,9 +29,10 @@ function InputForm({ setQuizData, metaData }) {
       alert(`I can only generate 1-50 questions at a time ${cry}`);
       return;
     }
-    console.log(`Generating ${num} questions about ${metaData.topic} of difficulty ${metaData.difficulty}...`);
+    console.log(`Generating ${num} questions about Harry Potter of difficulty ${metaData.difficulty}...`);
     setLoading(true);
-    const response = await generateQuestions(metaData.topic, num, difficultyMap[metaData.difficulty]);
+    let response = await generateQuestions(num, difficultyMap[metaData.difficulty]);
+    response = shuffleAnswers(response);
     console.log(`Quiz generated successfully:`, response);
     setQuizData(response);
     setLoading(false);

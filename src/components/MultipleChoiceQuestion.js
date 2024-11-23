@@ -10,6 +10,9 @@ function MultipleChoiceQuestion({ question, answers, index, answerState, onAnswe
     }
   };
 
+
+  
+
   return (
     <div style={styles.container}>
       <h1 style={styles.questionHeader}>Question {index}</h1>

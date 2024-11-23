@@ -1,8 +1,13 @@
 import OpenAI from "openai";
 import {z} from "zod";
 import { zodResponseFormat } from "openai/helpers/zod";
-import { stringify } from "openai/internal/qs/stringify.mjs";
+
 const API_KEY = process.env.REACT_APP_API_KEY;
+
+const client = new OpenAI({
+  apiKey: API_KEY,
+  dangerouslyAllowBrowser: true, 
+});
 
 const quizSchema = (numQuestions) => z.object({
   quiz : z.array(
@@ -21,36 +26,34 @@ const quizSchema = (numQuestions) => z.object({
   }),
 })
 
-const systemRole = `You are a massive Harry Potter nerd who is deeply involved in the wizarding world.
-                        You are writing a fun mutiple choice trivia questions that cover a range of topics 
+const topics = ['Characters', 'Hogwarts', 'Creatures', 'Magical Objects', 'Locations', 'Spells', 'Potions', 'Ingredients', 'History', 'Magic']
+
+const systemRole = `You are a massive Harry Potter fan who is deeply invested in the wizarding world.
+                        You are writing a fun mutiple choice trivia quiz that covers a the topics events, characters, places, spells, items
                         in the harry potter universe.
                     `
+const getRandomPrompt = (numQuestions, difficulty) => {
 
-const client = new OpenAI({
-  apiKey: API_KEY,
-  dangerouslyAllowBrowser: true, 
-});
+  const answerIndex = Array.from({ length: numQuestions }, () => Math.floor(Math.random() * 4));
+  const topic = [...topics].sort(() => 0.5 - Math.random()).slice(4).join();
+
+  const templates = [
+      `Create a multiple-choice quiz containing ${numQuestions} questions at a ${difficulty} difficulty level. Ensure that all questions are semantically distinct and are about ${topic}.`,
+      `Generate a ${difficulty}-level multiple-choice quiz with ${numQuestions} questions. Each question should be unique in meaning and are about ${topic}.`,
+      `Produce a multiple-choice quiz featuring ${numQuestions} questions, tailored to a ${difficulty} difficulty level. Make sure all questions are semantically different and are about ${topic}.`,
+      `Construct a multiple-choice quiz with ${numQuestions} questions of ${difficulty} difficulty, ensuring semantic uniqueness for every question and are about ${topic}.`,
+      `Design a ${difficulty}-difficulty multiple-choice quiz comprising ${numQuestions} questions and are about ${topic}.`
+  ];
+  return templates[Math.floor(Math.random() * templates.length)];
+}
 
 
-
-
-export const generateQuestions = async (topic = "Harry Potter", numQuestions = 5, difficulty = `medium`) => {
+export const generateQuestions = async (numQuestions = 5, difficulty = `medium`) => {
     if (numQuestions < 1) return {quiz:[]};
 
-    const answerIndex = Array.from({ length: numQuestions }, () => Math.floor(Math.random() * 4) 
-    );
-
-    const prompt = `Generate a multiple choice quiz that has ${numQuestions} questions of ${difficulty} difficulty.
-                  Ensure that each question is semantically unique, and the answer index of each questions is ${stringify(answerIndex)}.
-                  
-                  Include questions base off the books, movies, and other canon
-                        sources to cover as many different topics as possible. Use the following steps to guide
-                        your questions generation:
-                        
-                        1. Choose a random topic from the Harry Potter series (ie. event, character, place, etc)
-                        2. Generate a random question around the topic
-                        3. In any order generate several incorrect answers and one correct answer `;
-
+    const prompt = `${getRandomPrompt(numQuestions, difficulty)}
+                    Each question should cover a niche in Harry Potter lore.
+    `
       try {
         const response = await client.chat.completions.create({
           messages: [
@@ -60,8 +63,8 @@ export const generateQuestions = async (topic = "Harry Potter", numQuestions = 5
             },
             { role: `user`, content: prompt },
           ],
-          model: `gpt-4o-mini`,
-          temperature: 1.2,
+          model: `gpt-4o`,
+          temperature: 0.8,
           response_format: zodResponseFormat(quizSchema(numQuestions), `quiz_response`)
         });
         
@@ -72,12 +75,12 @@ export const generateQuestions = async (topic = "Harry Potter", numQuestions = 5
         const quizJSON = JSON.parse(raw); 
         if (quizJSON.quiz.length < numQuestions) {
           console.log(`Second Call was made with ${numQuestions - quizJSON.quiz.length} `);
-          const secondCall = await  generateQuestions(topic, numQuestions - quizJSON.quiz.length, difficulty);
+          const secondCall = await  generateQuestions(numQuestions - quizJSON.quiz.length, difficulty);
           quizJSON.quiz.push(...secondCall.quiz)
         }
         return quizJSON;
       } catch (error) {
         console.error(`Quiz generation failed:`, error);
-        return generateQuestions(topic, numQuestions, difficulty);
+        return generateQuestions(numQuestions, difficulty);
       }
 };

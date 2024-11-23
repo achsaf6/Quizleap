@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Sidebar = ({setTopic, difficulty, setDifficulty}) => {
+const Sidebar = ({difficulty, setDifficulty}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -8,7 +8,6 @@ const Sidebar = ({setTopic, difficulty, setDifficulty}) => {
   };
   return (
     <div>
-
       <div
         style={{
           ...styles.sidebar,
@@ -17,23 +16,6 @@ const Sidebar = ({setTopic, difficulty, setDifficulty}) => {
       >
         {isOpen && (
           <div style={styles.content}>
-            <div style={styles.inputGroup}>
-              <label htmlFor="topic" style={styles.label}>
-                Topic
-              </label>
-              <input
-                type="text"
-                id="topic"
-                placeholder={"Harry Potter"}
-                onChange={(e) => {
-                    let topic = e.target.value;
-                    if (topic === "")
-                        topic = "Harry Potter";
-                    setTopic(topic);
-                }}
-                style={styles.input}
-              />
-            </div>
             <div style={styles.sliderGroup}>
               <label className="Label" style={styles.label}>
                 Difficulty: 
