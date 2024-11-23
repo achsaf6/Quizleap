@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { generateQuestions } from "../services/llmServices.ts";
+import "./animations.css"
 
 
+const difficultyMap = {
+  1: "Very Easy",
+  2: "Easy",
+  3: "Medium",
+  4: "Hard",
+  5: "Impossible"
+};
 
-function InputForm({ setNumQuestions, setQuizData }) {
+function InputForm({ setQuizData, metaData }) {
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -13,10 +21,9 @@ function InputForm({ setNumQuestions, setQuizData }) {
       alert(`I can only generate 1-50 questions at a time ${cry}`);
       return;
     }
-    console.log(`Generating ${num} questions...`);
+    console.log(`Generating ${num} questions about ${metaData.topic} of difficulty ${metaData.difficulty}...`);
     setLoading(true);
-    setNumQuestions(num);
-    const response = await generateQuestions(num, "a very hard");
+    const response = await generateQuestions(metaData.topic, num, difficultyMap[metaData.difficulty]);
     console.log(`Quiz generated successfully:`, response);
     setQuizData(response);
     setLoading(false);
@@ -39,12 +46,12 @@ function InputForm({ setNumQuestions, setQuizData }) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  });
 
   return (
     <div style={styles.container}>
       {loading ? (
-        <div style={styles.loadingText}>Loading...</div>
+        <img src="/loading.png" alt="Loading..." style={styles.loading}/>
       ) : (
         <form
           onSubmit={(e) => {
@@ -63,8 +70,8 @@ function InputForm({ setNumQuestions, setQuizData }) {
           <button
             type="submit"
             style={styles.button}
-            onMouseOver={(e) => (e.target.style.backgroundColor = "#0056b3")}
-            onMouseOut={(e) => (e.target.style.backgroundColor = "#007bff")}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#ae0001")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = "#740001")}
           >
             Generate Quiz
           </button>
@@ -81,9 +88,11 @@ const styles = {
     margin: "auto",
     textAlign: "center",
   },
-  loadingText: {
-    fontSize: "1.5em",
+  loading: {
+    fontSize: "10em",
+    width: "0.8em",
     fontWeight: "bold",
+    animation: "rotate 7s linear infinite",
   },
   form: {
     display: "flex",
@@ -105,12 +114,15 @@ const styles = {
     borderRadius: "5px",
     width: "80%",
     fontSize: "1em",
+    textAlign: "center",
+    WebkitAppearance: 'none',
+    MozAppearance: 'textfield',
   },
   button: {
     padding: "10px 20px",
     border: "none",
     borderRadius: "5px",
-    backgroundColor: "#007bff",
+    backgroundColor: "#740001",
     color: "white",
     cursor: "pointer",
     fontSize: "1em",

@@ -49,7 +49,7 @@ const styles = {
     cursor: "pointer",
     margin: "10px 0",
     padding: "10px",
-    borderRadius: "5px",
+    borderRadius: "5em",
     textAlign: "center",
     backgroundColor: isAnswered
       ? answerIndex === idx
