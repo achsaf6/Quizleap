@@ -1,24 +1,26 @@
 import React, { useState } from "react";
 
-const Sidebar = ({difficulty, setDifficulty}) => {
+/**
+ * Sidebar component for controlling quiz settings, such as difficulty.
+ * Can be toggled open or closed, and includes a slider for setting difficulty.
+ */
+const Sidebar = ({ difficulty, setDifficulty }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Toggle the sidebar open or closed
   const toggleSidebar = () => {
-    setIsOpen(!isOpen); 
+    setIsOpen(!isOpen);
   };
+
   return (
     <div>
-      <div
-        style={{
-          ...styles.sidebar,
-          ...(isOpen ? {} : styles.closed),
-        }}
-      >
+      <div style={{ ...styles.sidebar, ...(isOpen ? {} : styles.closed) }}>
+        {/* Sidebar content visible when open */}
         {isOpen && (
           <div style={styles.content}>
             <div style={styles.sliderGroup}>
               <label className="Label" style={styles.label}>
-                Difficulty: 
+                Difficulty:
               </label>
               <input
                 type="range"
@@ -32,6 +34,7 @@ const Sidebar = ({difficulty, setDifficulty}) => {
             </div>
           </div>
         )}
+        {/* Button to close the sidebar */}
         {isOpen && (
           <button style={styles.toggleBtn} onClick={toggleSidebar}>
             Close
@@ -39,7 +42,7 @@ const Sidebar = ({difficulty, setDifficulty}) => {
         )}
       </div>
 
-      {/* Small tag to reopen when closed */}
+      {/* Tag to reopen the sidebar when closed */}
       {!isOpen && (
         <div style={styles.reopenTag} onClick={toggleSidebar}>
           Open
@@ -49,6 +52,7 @@ const Sidebar = ({difficulty, setDifficulty}) => {
   );
 };
 
+// Styles for the Sidebar component
 const styles = {
   sidebar: {
     position: "fixed",
@@ -67,23 +71,8 @@ const styles = {
   closed: {
     transform: "translateX(-100%)",
   },
-  toggleBtn: {
-    // position: "fixed",
-    // top: "50%",
-    // left: "40%",
-    // transform: "translateY(-50%)",
-    // padding: "10px 15px",
-    // backgroundColor: "#333",
-    // color: "#fff",
-    // borderRadius: "1em 1em 1em 1em",
-    // cursor: "pointer",
-    // fontSize: "14px",
-  },
   content: {
     marginTop: "50px",
-  },
-  inputGroup: {
-    marginBottom: "20px",
   },
   sliderGroup: {
     marginBottom: "20px",

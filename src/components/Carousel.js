@@ -1,24 +1,44 @@
 import React, { useState } from "react";
 import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 
+/**
+ * Carousel component for displaying a series of multiple-choice questions.
+ * Allows navigation between questions and handles user answers.
+ */
 function Carousel({ quizData }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Tracks the state of answers for each question
   const [answersState, setAnswersState] = useState(
     quizData.quiz.map(() => ({ answerIndex: null, isAnswered: false }))
   );
 
+  /**
+   * Navigate to the previous question.
+   * If the current question is the first, wrap around to the last question.
+   */
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? quizData.numQuestions - 1 : prevIndex - 1
     );
   };
 
+  /**
+   * Navigate to the next question.
+   * If the current question is the last, wrap around to the first question.
+   */
   const goToNext = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === quizData.numQuestions - 1 ? 0 : prevIndex + 1
     );
   };
 
+  /**
+   * Handles the user's answer to a question.
+   * Updates the answer state for the specified question.
+   * @param {number} questionIndex - Index of the question being answered.
+   * @param {number} answerIndex - Index of the selected answer.
+   */
   const handleAnswer = (questionIndex, answerIndex) => {
     setAnswersState((prevState) => {
       const newState = [...prevState];
@@ -30,6 +50,9 @@ function Carousel({ quizData }) {
     });
   };
 
+  /**
+   * Refreshes the page, effectively restarting the quiz.
+   */
   const refreshPage = () => {
     window.location.reload();
   };
@@ -37,7 +60,12 @@ function Carousel({ quizData }) {
   return (
     <div style={styles.container}>
       <div className="refresh">
-        <img style={styles.refresh} src="/refresh.png" alt="Refresh" onClick={refreshPage}/>
+        <img
+          style={styles.refresh}
+          src="/refresh.png"
+          alt="Refresh"
+          onClick={refreshPage}
+        />
       </div>
       <div className="carouselContainer" style={styles.carouselContainer}>
         <button onClick={goToPrevious} style={styles.arrowButton}>
@@ -60,6 +88,7 @@ function Carousel({ quizData }) {
   );
 }
 
+// Inline styles for the Carousel component
 const styles = {
   refresh: {
     margin: "1em auto",

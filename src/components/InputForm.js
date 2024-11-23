@@ -1,43 +1,68 @@
 import React, { useState, useEffect } from "react";
 import { generateQuestions } from "../services/llmServices.ts";
-import "./animations.css"
+import "./animations.css";
 
-
+/**
+ * Maps difficulty levels to descriptive labels.
+ */
 const difficultyMap = {
   1: "Very Easy",
   2: "Easy",
   3: "Medium",
   4: "Hard",
-  5: "Impossible"
+  5: "Impossible",
 };
 
+/**
+ * Shuffles the answers in the quiz data to ensure randomness.
+ * @param {Object} response - The quiz data returned from the API.
+ * @returns {Object} The updated quiz data with shuffled answers.
+ */
 const shuffleAnswers = (response) => {
-  response.quiz.forEach((quizItem) => {
-    quizItem.answers.sort(() => Math.random() - 0.5);
-  });
-  return response; 
+  const shuffledQuiz = response.quiz.map((quizItem) => ({
+    ...quizItem,
+    answers: [...quizItem.answers].sort(() => Math.random() - 0.5),
+  }));
+  const newResponse = { ...response, quiz: shuffledQuiz };
+  return newResponse;
 };
 
 
+/**
+ * InputForm component for users to input the number of quiz questions to generate.
+ * Handles interaction with the quiz generation API and user input.
+ */
 function InputForm({ setQuizData, metaData }) {
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles quiz generation based on user input.
+   * @param {number} num - The number of quiz questions to generate.
+   */
   const handleSubmit = async (num) => {
     if (isNaN(num) || num <= 0 || num > 50) {
-      const cry = String.fromCodePoint(128557);
+      const cry = String.fromCodePoint(128557); // Crying face emoji
       alert(`I can only generate 1-50 questions at a time ${cry}`);
       return;
     }
+
     console.log(`Generating ${num} questions about Harry Potter of difficulty ${metaData.difficulty}...`);
     setLoading(true);
+
     let response = await generateQuestions(num, difficultyMap[metaData.difficulty]);
-    response = shuffleAnswers(response);
-    console.log(`Quiz generated successfully:`, response);
+    response = shuffleAnswers(response); // Ensures answers are randomized
+
     setQuizData(response);
     setLoading(false);
+
+    console.log(`Quiz generated successfully:`, response);
   };
 
+  /**
+   * Keydown event listener to allow numeric input for quiz generation.
+   * Pressing a number key generates the corresponding number of questions.
+   */
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (document.activeElement.tagName !== "INPUT") {
@@ -60,7 +85,7 @@ function InputForm({ setQuizData, metaData }) {
   return (
     <div style={styles.container}>
       {loading ? (
-        <img src="/loading.png" alt="Loading..." style={styles.loading}/>
+        <img src="/loading.png" alt="Loading..." style={styles.loading} />
       ) : (
         <form
           onSubmit={(e) => {
@@ -90,6 +115,7 @@ function InputForm({ setQuizData, metaData }) {
   );
 }
 
+// Inline styles for the InputForm component
 const styles = {
   container: {
     fontFamily: "Arial, sans-serif",
@@ -124,8 +150,8 @@ const styles = {
     width: "80%",
     fontSize: "1em",
     textAlign: "center",
-    WebkitAppearance: 'none',
-    MozAppearance: 'textfield',
+    WebkitAppearance: "none",
+    MozAppearance: "textfield",
   },
   button: {
     padding: "10px 20px",
