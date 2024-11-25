@@ -3,6 +3,7 @@
 
 Welcome to the **Harry Potter LLM Quiz Generator**, a React-based web app that uses OpenAI's models to create custom multiple-choice quizzes based on the Harry Potter universe. Whether you're a die-hard fan or a curious learner, this app brings magical fun to your quiz sessions!
 
+You can view the deployed version at https://main.d1wrf5x9h359m1.amplifyapp.com/
 ---
 
 ## Features
